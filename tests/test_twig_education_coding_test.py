@@ -57,3 +57,8 @@ class TestGroupListElements(TestCase):
             group_list_elements([1, 2, 3, 4, 5], 1),
             [[1, 2, 3, 4, 5]]
         )
+        # Check that splitting an empty list just gives an empty list back.
+        self.assertEqual(
+            group_list_elements([], 5),
+            [[]]
+        )

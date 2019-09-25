@@ -26,7 +26,7 @@ def group_list_elements(list_to_chunk, chunk_value):
         # needing, therefor we save time by returning the list_to_chunk
         # (inside a list). Also keeping in-line with pseudo-code by
         # doing this.
-        if chunk_value == 0 or chunk_value == 1:
+        if chunk_value == 0 or chunk_value == 1 or not list_to_chunk:
             return [list_to_chunk]
         chunked_list = []
         # Loop through a range from 0 to the length of the chunk stepping
