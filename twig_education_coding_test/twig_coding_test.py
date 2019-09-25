@@ -37,8 +37,9 @@ def group_list_elements(list_to_chunk, chunk_value):
             # chunked list (elements are added to the chunked_list as a list)
             chunked_list.append(list_to_chunk[i:i + chunk_value-1])
         return chunked_list
-    # The chunk_value passed is not an int, therefore it can't be split by that
-    # value so log a warning, depending on the severity this could instead,
+    # The chunk_value passed is not an int or the list_to_chunk value passed
+    # is not a list, therefore the list cannot be split properly so log a
+    # warning. Depending on the severity this could instead,
     # raise a TypeError instead of logging a warning.
     logger.warning(
         'chunk value passed is not an integer or the list_to_chunk value '
