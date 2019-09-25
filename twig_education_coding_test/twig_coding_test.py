@@ -40,5 +40,8 @@ def group_list_elements(list_to_chunk, chunk_value):
     # The chunk_value passed is not an int, therefore it can't be split by that
     # value so log a warning, depending on the severity this could instead,
     # raise a TypeError instead of logging a warning.
-    logger.warning('chunk value passed is not an int, please enter an int')
+    logger.warning(
+        'chunk value passed is not an integer or the list_to_chunk value '
+        'passed is not a list'
+    )
     return []
