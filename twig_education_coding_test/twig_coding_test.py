@@ -1,3 +1,4 @@
+import math
 import logging
 
 logger = logging.getLogger(__name__)
@@ -5,44 +6,48 @@ logger = logging.getLogger(__name__)
 
 def group_list_elements(list_to_chunk, chunk_value):
     """
-    Function which splits a list (array) into sub-lists of length chunk_value,
-    if the length cannot be split equally by the chunk value the final sub-list
-    will have length equal to list_to_chunk % chunk_value.
-
-    This method follows the pseudo-code example and answer which suggests that
-    the chunk_value should have 1 taken away from it. If that is not the
-    desired behaviour then any reference to chunk_value-1 could be replaced
-    with just chunk_value.
+    Function which splits a list (array) into a list of length chunk_value
+    containing sub-lists of equal length, if the list cannot be split equally
+    then the last sub-list contains the remaining elements.
 
     :param list_to_chunk:       :list: list to be split into sub-lists.
-    :param chunk_value:         :int: desired length of sub-lists.
-    :return:                    :list: list containing sub-lists of length
-                                chunk_value.
+    :param chunk_value:         :int: desired length of the chunked list.
+    :return:                    :list: list of length chunk_value containing
+                                equally sized lists.
+
+    Note: If the chunk_value is greater than the length of list_to_chunk then
+          the list will be split into single elements.
     """
     # Check that the chunk_value is an int and the list_to_chunk is a list,
     # if they aren't, a warning is logged.
-    if isinstance(chunk_value, int) and isinstance(list_to_chunk, list):
-        # If the chunk_value is 0 or 1 we know that there is no splitting
-        # needing, therefor we save time by returning the list_to_chunk
-        # (inside a list). Also keeping in-line with pseudo-code by
-        # doing this.
-        if chunk_value == 0 or chunk_value == 1 or not list_to_chunk:
-            return [list_to_chunk]
+    try:
+        if not isinstance(chunk_value, int):
+            logger.error('Passed chunk_value is not an integer, please pass'
+                         'an integer')
+            return []
+        if not isinstance(list_to_chunk, list):
+            logger.error('Passed list_to_chunk value is not a list, please'
+                         'pass a list')
+            return []
+        # Need the chunk size so that we can iterate over the list in
+        # steps of chunk_size. chunk_size can't be less than 1.
+        chunk_size = round((len(list_to_chunk)) / chunk_value) or 1
         chunked_list = []
-        # Loop through a range from 0 to the length of the chunk stepping
-        # by chunk_value - 1 for each iteration. The chunk_value - 1 is
-        # to keep in-line with the pseudo-code, not sure if this is needed.
-        for i in range(0, len(list_to_chunk), chunk_value-1):
-            # Add elements between i and i+chunk_value-1 (not inclusive) to the
-            # chunked list (elements are added to the chunked_list as a list)
-            chunked_list.append(list_to_chunk[i:i + chunk_value-1])
+        count = 0
+        # Loop through in steps of chunk_size.
+        for i in range(0, len(list_to_chunk), chunk_size):
+            # If we're on the last iteration, add the rest of the
+            # list_to_chunk as the last element of the chunked list
+            # and then break.
+            if count == chunk_value - 1:
+                chunked_list.append(list_to_chunk[i:])
+                break
+            # Add a list to the chunked list which contains elements
+            # between i and i+chunk_size, then add 1 to the count.
+            chunked_list.append(list_to_chunk[i:i + chunk_size])
+            count += 1
         return chunked_list
-    # The chunk_value passed is not an int or the list_to_chunk value passed
-    # is not a list, therefore the list cannot be split properly so log a
-    # warning. Depending on the severity this could instead,
-    # raise a TypeError instead of logging a warning.
-    logger.warning(
-        'chunk value passed is not an integer or the list_to_chunk value '
-        'passed is not a list'
-    )
-    return []
+    except ZeroDivisionError:
+        logger.error('Cannot divide list into a new list of 0 elements,'
+                     ' please enter a non-zero integer character')
+        return []
